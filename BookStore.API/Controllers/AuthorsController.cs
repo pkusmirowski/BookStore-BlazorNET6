@@ -64,7 +64,6 @@ namespace BookStore.API.Controllers
             {
                 logger.LogError(ex, $"Error GET in {nameof(GetAuthors)}");
                 return StatusCode(500, Messages.Error500);
-
             }
         }
 
@@ -141,7 +140,6 @@ namespace BookStore.API.Controllers
             {
                 logger.LogError(ex, $"Error DELETE in {nameof(DeleteAuthor)}");
                 return StatusCode(500, Messages.Error500);
-
             }
         }
 

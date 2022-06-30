@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using BookStore.API.Data;
 using BookStore.API.Models.Author;
-using AutoMapper;
 using BookStore.API.Static;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
@@ -60,7 +57,7 @@ namespace BookStore.API.Controllers
                 var authorDto = mapper.Map<AuthorReadOnlyDto>(author);
                 return Ok(authorDto);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.LogError(ex, $"Error GET in {nameof(GetAuthors)}");
                 return StatusCode(500, Messages.Error500);
@@ -70,6 +67,7 @@ namespace BookStore.API.Controllers
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutAuthor(int id, AuthorUpdateDto authorDto)
         {
             if (id != authorDto.Id)
@@ -109,6 +107,8 @@ namespace BookStore.API.Controllers
         // POST: api/Authors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<AuthorCreateDto>> PostAuthor(AuthorCreateDto authorDto)
         {
             var author = mapper.Map<Author>(authorDto);
@@ -120,6 +120,7 @@ namespace BookStore.API.Controllers
 
         // DELETE: api/Authors/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             try
@@ -145,7 +146,7 @@ namespace BookStore.API.Controllers
 
         private async Task<bool> AuthorExists(int id)
         {
-            return await _context.Authors?.AnyAsync(e => e.Id == id);
+            return await _context.Authors.AnyAsync(e => e.Id == id);
         }
     }
 }

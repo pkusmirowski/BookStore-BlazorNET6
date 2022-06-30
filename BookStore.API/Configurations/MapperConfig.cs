@@ -2,6 +2,7 @@
 using BookStore.API.Data;
 using BookStore.API.Models.Author;
 using BookStore.API.Models.Book;
+using BookStore.API.Models.User;
 
 namespace BookStore.API.Configurations
 {
@@ -12,15 +13,17 @@ namespace BookStore.API.Configurations
             CreateMap<AuthorReadOnlyDto, Author>().ReverseMap();
             CreateMap<AuthorCreateDto, Author>().ReverseMap();
             CreateMap<AuthorUpdateDto, Author>().ReverseMap();
-            
+
             CreateMap<BookCreateDto, Book>().ReverseMap();
             CreateMap<BookUpdateDto, Book>().ReverseMap();
             CreateMap<Book, BookReadOnlyDto>()
-                .ForMember(q=>q.AuthorName,d => d.MapFrom(map => $"{map.Author.FirstName} {map.Author.LastName}"))
+                .ForMember(q => q.AuthorName, d => d.MapFrom(map => $"{map.Author.FirstName} {map.Author.LastName}"))
                 .ReverseMap();
             CreateMap<Book, BookDetailsDto>()
             .ForMember(q => q.AuthorName, d => d.MapFrom(map => $"{map.Author.FirstName} {map.Author.LastName}"))
             .ReverseMap();
+
+            CreateMap<ApiUser, UserDto>().ReverseMap();
         }
     }
 }
